@@ -8,209 +8,690 @@
       content="非官方沈伯洋動漫市政願景產生器，以規則式語料生成台北市政願景金句卡。"
     />
     <title>沈伯洋動漫市政願景產生器</title>
-  </head>
-  <body>
-    <div id="root">
-      <main class="fallback-shell">
-        <section class="fallback-app">
-          <p class="fallback-badge">非官方模擬工具</p>
-          <h1>沈伯洋動漫市政願景產生器</h1>
-          <p class="fallback-note">
-            這是靜態備援版。如果你在 GitHub Pages 看到這個畫面，代表目前是直接部署原始檔，尚未使用 Vite build 後的 dist。
-          </p>
-          <label>
-            <span>輸入台北市政題目</span>
-            <textarea id="fallback-query" rows="4">內湖塞車與南港發展要怎麼解決？</textarea>
-          </label>
-          <div class="fallback-actions">
-            <button type="button" data-topic="transport">交通</button>
-            <button type="button" data-topic="diplomacy">首都外交</button>
-            <button type="button" data-topic="defense">災防民防</button>
-            <button type="button" data-topic="info">假訊息</button>
-            <button type="button" id="fallback-generate">產生</button>
-            <button type="button" id="fallback-copy">複製</button>
-          </div>
-          <article class="fallback-card" id="fallback-card" aria-live="polite"></article>
-        </section>
-      </main>
-    </div>
-    <script type="module" src="/src/main.tsx"></script>
-    <script>
-      const fallbackData = {
-        transport: {
-          title: "從辦公孤島到連結之城，台北交通必須重新編碼",
-          subtitle: "NERV 式交通節點重構",
-          body: "面對台北交通與通勤壓力，城市不能只是加厚裝甲，而要重新設計路徑。這不是單一路口的問題，而是人流、物流與生活機能長期失衡。我們要以南港和內湖為優先示範區，整合公共運輸、企業錯峰與接駁系統，避免下一個辦公孤島形成。",
-          tags: ["交通韌性", "辦公孤島", "台北願景"]
-        },
-        diplomacy: {
-          title: "台北要走向世界，不再停留在單一框架",
-          subtitle: "首都外交的次元躍升",
-          body: "面對雙城論壇與城市定位，台北的視野不能被單一城市框住。這不是禮貌性的交流，而是首都如何選擇自己的國際座標。台北應轉向巴黎、東京、倫敦等民主城市，建立透明、對等、有實質合作的無限城論壇。",
-          tags: ["首都外交", "無限城論壇", "民主城市"]
-        },
-        defense: {
-          title: "把災防做在平時，讓台北在關鍵時刻不失序",
-          subtitle: "全民韌性的終局測試",
-          body: "面對地震、災害與基礎設施安全，敵人很強，難道我們就不準備了嗎？災防不是單一局處的演習，而是醫療、避難、通訊與社區互助的整體測試。市府要盤點避難空間、物資節點與社區訓練，讓全民防衛意識變成日常制度。",
-          tags: ["災防民防", "基礎設施", "城市韌性"]
-        },
-        info: {
-          title: "守住資訊信任，就是守住城市治理的地基",
-          subtitle: "認知防線展開",
-          body: "面對假新聞、網軍與抹黑，資訊戰最危險的地方不是噪音很大，而是讓人失去判斷的座標。市府必須建立即時澄清機制、公開資料儀表板與媒體識讀合作，用透明資料把謠言的擴散速度壓下來。",
-          tags: ["認知防禦", "透明澄清", "資訊韌性"]
-        }
-      };
-
-      const queryEl = document.getElementById("fallback-query");
-      const cardEl = document.getElementById("fallback-card");
-      let activeTopic = "transport";
-
-      function detectTopic(value) {
-        if (/雙城|兩岸|上海|國際|論壇/.test(value)) return "diplomacy";
-        if (/地震|災害|演習|避難|防空|民防/.test(value)) return "defense";
-        if (/假新聞|抹黑|網軍|造謠|認知|滲透/.test(value)) return "info";
-        return "transport";
-      }
-
-      function renderFallback() {
-        activeTopic = detectTopic(queryEl.value || "");
-        const data = fallbackData[activeTopic];
-        cardEl.innerHTML = `
-          <p class="fallback-kicker">Taipei Vision Generator</p>
-          <h2>${data.title}</h2>
-          <p class="fallback-subtitle">${data.subtitle}</p>
-          <p>${data.body}</p>
-          <div>${data.tags.map((tag) => `<span>#${tag}</span>`).join("")}</div>
-          <small>非本人發言 / 非官方 / 產生式政治文案模擬</small>
-        `;
-      }
-
-      document.querySelectorAll("[data-topic]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const prompts = {
-            transport: "內湖塞車與南港發展要怎麼解決？",
-            diplomacy: "雙城論壇與台北的國際定位該怎麼調整？",
-            defense: "台北面對地震災害要如何建立韌性？",
-            info: "面對假新聞網軍抹黑，市府該怎麼回應？"
-          };
-          queryEl.value = prompts[button.dataset.topic];
-          renderFallback();
-        });
-      });
-
-      document.getElementById("fallback-generate").addEventListener("click", renderFallback);
-      document.getElementById("fallback-copy").addEventListener("click", () => {
-        navigator.clipboard?.writeText(cardEl.innerText);
-      });
-      renderFallback();
-    </script>
     <style>
-      .fallback-shell {
-        min-height: 100vh;
-        padding: 32px 16px;
-        background: #f7f4ed;
-        color: #1e2930;
-        font-family: "Microsoft JhengHei", system-ui, sans-serif;
+      :root {
+        --ink: #1e2930;
+        --muted: #5a6872;
+        --line: #d7d1c5;
+        --paper: #fffdf8;
+        --accent: #b63243;
+        --teal: #1b7f7a;
+        --gold: #b88722;
+        --blue: #295f98;
+        --shadow: 0 24px 70px rgba(31, 41, 51, 0.14);
       }
 
-      .fallback-app {
-        max-width: 920px;
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        color: var(--ink);
+        background: #f7f4ed;
+        font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        padding: 40px 20px;
+        background:
+          linear-gradient(90deg, rgba(41, 95, 152, 0.08) 1px, transparent 1px),
+          linear-gradient(rgba(27, 127, 122, 0.07) 1px, transparent 1px),
+          radial-gradient(circle at top left, rgba(182, 50, 67, 0.12), transparent 36rem),
+          #f7f4ed;
+        background-size: 42px 42px, 42px 42px, auto;
+      }
+
+      .workspace {
+        width: min(1180px, 100%);
         margin: 0 auto;
       }
 
-      .fallback-badge,
-      .fallback-note,
-      .fallback-card small {
-        color: #5a6872;
+      .intro {
+        max-width: 840px;
+        margin-bottom: 28px;
       }
 
-      .fallback-badge {
-        font-weight: 800;
-      }
-
-      .fallback-app h1 {
-        margin: 12px 0;
-        font-size: clamp(2rem, 6vw, 4rem);
-        line-height: 1.08;
-      }
-
-      .fallback-app label,
-      .fallback-app label span {
-        display: block;
-        font-weight: 800;
-      }
-
-      .fallback-app textarea {
-        width: 100%;
-        margin-top: 8px;
-        padding: 14px;
-        border: 1px solid #d7d1c5;
-        border-radius: 8px;
-        font: inherit;
-        line-height: 1.7;
-      }
-
-      .fallback-actions {
-        display: flex;
-        flex-wrap: wrap;
+      .badge {
+        display: inline-flex;
+        align-items: center;
         gap: 8px;
-        margin: 14px 0;
-      }
-
-      .fallback-actions button {
-        min-height: 40px;
-        border: 1px solid #d7d1c5;
-        border-radius: 8px;
-        padding: 0 12px;
-        background: #fffdf8;
-        color: #1e2930;
-        font: inherit;
+        min-height: 34px;
+        padding: 6px 12px;
+        border: 1px solid rgba(30, 41, 48, 0.16);
+        border-radius: 999px;
+        background: rgba(255, 253, 248, 0.8);
+        color: var(--teal);
+        font-size: 0.92rem;
         font-weight: 800;
       }
 
-      .fallback-actions button:last-child,
-      .fallback-actions button:nth-last-child(2) {
-        background: #b63243;
+      h1 {
+        margin: 18px 0 12px;
+        color: var(--ink);
+        font-size: clamp(2rem, 6vw, 4.2rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .intro p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.8;
+      }
+
+      .generator-layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .control-panel,
+      .preview-panel {
+        border: 1px solid rgba(30, 41, 48, 0.13);
+        border-radius: 8px;
+        background: rgba(255, 253, 248, 0.86);
+        box-shadow: var(--shadow);
+      }
+
+      .control-panel {
+        padding: 20px;
+      }
+
+      .preview-panel {
+        padding: 16px;
+      }
+
+      label,
+      .field-label,
+      legend {
+        color: var(--ink);
+        font-size: 0.95rem;
+        font-weight: 800;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 140px;
+        margin-top: 10px;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 15px;
+        background: #fff;
+        color: var(--ink);
+        line-height: 1.7;
+        outline: none;
+      }
+
+      textarea:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(27, 127, 122, 0.15);
+      }
+
+      .primary-button,
+      .icon-button,
+      .chip,
+      .segment {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-weight: 800;
+      }
+
+      .primary-button {
+        width: 100%;
+        margin-top: 12px;
+        background: var(--accent);
         color: #fff;
       }
 
-      .fallback-card {
-        margin-top: 16px;
-        border: 1px solid #d7d1c5;
-        border-radius: 8px;
-        padding: clamp(22px, 5vw, 44px);
-        background: #fffdf8;
+      .topic-chips,
+      .action-bar {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 18px;
       }
 
-      .fallback-kicker {
-        color: #295f98;
+      .chip,
+      .icon-button {
+        min-width: 0;
+        padding: 0 10px;
+        background: #fff;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+
+      .chip.active,
+      .segment.active {
+        background: rgba(27, 127, 122, 0.13);
+        border-color: rgba(27, 127, 122, 0.45);
+        color: #11635f;
+      }
+
+      .intensity-panel {
+        min-width: 0;
+        margin: 20px 0 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .segmented-control {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 10px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #f1ece2;
+      }
+
+      .segment {
+        min-height: 38px;
+        background: transparent;
+        color: var(--muted);
+      }
+
+      .segment.active {
+        background: #fffdf8;
+        color: var(--ink);
+        box-shadow: 0 4px 14px rgba(31, 41, 51, 0.08);
+      }
+
+      .vision-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 580px;
+        border: 1px solid rgba(30, 41, 48, 0.16);
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(255, 253, 248, 0.98), rgba(247, 244, 237, 0.98));
+      }
+
+      .vision-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(41, 95, 152, 0.11) 1px, transparent 1px),
+          linear-gradient(rgba(27, 127, 122, 0.1) 1px, transparent 1px);
+        background-size: 32px 32px;
+        mask-image: linear-gradient(to bottom, black, transparent 72%);
+      }
+
+      .card-content {
+        position: relative;
+        display: flex;
+        min-height: 580px;
+        flex-direction: column;
+        padding: clamp(24px, 5vw, 54px);
+      }
+
+      .card-kicker {
+        width: fit-content;
+        border-left: 5px solid var(--accent);
+        padding-left: 12px;
+        color: var(--blue);
+        font-size: 0.86rem;
         font-weight: 900;
         text-transform: uppercase;
       }
 
-      .fallback-card h2 {
-        margin: 20px 0 12px;
-        font-size: clamp(1.8rem, 5vw, 3.5rem);
-        line-height: 1.1;
+      .vision-card h2 {
+        max-width: 780px;
+        margin: 36px 0 14px;
+        color: #16222a;
+        font-size: clamp(2rem, 5vw, 4.4rem);
+        line-height: 1.08;
+        letter-spacing: 0;
       }
 
-      .fallback-subtitle {
+      .subtitle {
+        width: fit-content;
+        max-width: 100%;
+        margin: 0 0 26px;
+        border-top: 2px solid var(--gold);
+        border-bottom: 2px solid var(--gold);
+        padding: 8px 0;
         color: #8a4f0f;
+        font-size: clamp(1rem, 2.2vw, 1.28rem);
         font-weight: 900;
+        line-height: 1.5;
       }
 
-      .fallback-card p {
-        line-height: 1.9;
+      .body {
+        max-width: 780px;
+        margin: 0;
+        color: #26343c;
+        font-size: clamp(1.03rem, 2vw, 1.3rem);
+        line-height: 1.95;
+        font-weight: 600;
       }
 
-      .fallback-card span {
-        display: inline-block;
-        margin: 4px 6px 4px 0;
-        color: #5a6872;
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 32px;
+      }
+
+      .tag-row span {
+        min-height: 30px;
+        border: 1px solid rgba(30, 41, 48, 0.14);
+        border-radius: 999px;
+        padding: 5px 10px;
+        background: rgba(255, 255, 255, 0.68);
+        color: var(--muted);
+        font-size: 0.84rem;
         font-weight: 800;
       }
+
+      .disclaimer {
+        margin: 14px 0 0;
+        color: #6a747b;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 900px) {
+        .app-shell {
+          padding: 24px 14px;
+        }
+
+        .generator-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .vision-card,
+        .card-content {
+          min-height: 520px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .control-panel,
+        .preview-panel {
+          padding: 12px;
+        }
+
+        .topic-chips,
+        .action-bar {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .segmented-control {
+          grid-template-columns: 1fr;
+        }
+
+        .vision-card h2 {
+          font-size: 2rem;
+        }
+
+        .card-content {
+          padding: 22px;
+        }
+      }
     </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <div class="intro">
+          <div class="badge">盾 非官方模擬工具</div>
+          <h1 id="app-title">沈伯洋動漫市政願景產生器</h1>
+          <p>非本人發言，非官方工具；內容由前端規則式語料生成，不代表任何競選團隊。</p>
+        </div>
+
+        <div class="generator-layout">
+          <section class="control-panel" aria-label="產生器控制面板">
+            <label>
+              輸入台北市政題目
+              <textarea id="query" rows="4">內湖塞車與南港發展要怎麼解決？</textarea>
+            </label>
+            <button class="primary-button" id="generate" type="button">產生</button>
+
+            <div class="topic-chips" aria-label="市政主題快捷鍵">
+              <button class="chip active" data-topic="transport" type="button">交通</button>
+              <button class="chip" data-topic="urbanPlanning" type="button">都更</button>
+              <button class="chip" data-topic="cityDiplomacy" type="button">首都外交</button>
+              <button class="chip" data-topic="civilDefense" type="button">災防民防</button>
+              <button class="chip" data-topic="disinformation" type="button">假訊息</button>
+              <button class="chip" data-topic="governance" type="button">行政效率</button>
+            </div>
+
+            <fieldset class="intensity-panel">
+              <legend>語氣強度</legend>
+              <div class="segmented-control">
+                <button class="segment" data-intensity="steady" type="button">穩健</button>
+                <button class="segment active" data-intensity="campaign" type="button">助選</button>
+                <button class="segment" data-intensity="strategic" type="button">戰略</button>
+              </div>
+            </fieldset>
+
+            <div class="action-bar">
+              <button class="icon-button" id="reroll" type="button">重抽</button>
+              <button class="icon-button" id="copy" type="button">複製</button>
+              <button class="icon-button" id="download" type="button">下載</button>
+            </div>
+          </section>
+
+          <section class="preview-panel" aria-label="金句卡預覽">
+            <article class="vision-card" id="card">
+              <div class="card-content">
+                <div class="card-kicker">Taipei Vision Generator</div>
+                <h2 id="headline"></h2>
+                <p class="subtitle" id="subtitle"></p>
+                <p class="body" id="body"></p>
+                <div class="tag-row" id="tags"></div>
+                <p class="disclaimer" id="disclaimer"></p>
+              </div>
+            </article>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const disclaimer = "非本人發言 / 非官方 / 產生式政治文案模擬";
+      const prompts = {
+        transport: "內湖塞車與南港發展要怎麼解決？",
+        urbanPlanning: "台北都更和居住問題需要什麼新願景？",
+        cityDiplomacy: "雙城論壇與台北的國際定位該怎麼調整？",
+        civilDefense: "台北面對地震災害要如何建立韌性？",
+        disinformation: "面對假新聞網軍抹黑，市府該怎麼回應？",
+        governance: "台北市府如何擺脫無效會議與官僚拖延？"
+      };
+
+      const rules = [
+        ["transport", ["塞車", "交通", "內湖", "南港", "捷運", "公車", "通勤", "停車", "車流"]],
+        ["urbanPlanning", ["都更", "住宅", "社宅", "房價", "土地", "都市", "更新", "商圈", "生活圈"]],
+        ["cityDiplomacy", ["雙城", "上海", "兩岸", "交流", "論壇", "國際", "巴黎", "東京", "民主城市"]],
+        ["civilDefense", ["地震", "災害", "演習", "避難", "防空", "民防", "安全", "醫療", "韌性"]],
+        ["disinformation", ["假新聞", "抹黑", "網軍", "造謠", "資訊戰", "認知", "滲透", "第五縱隊", "灰色地帶"]],
+        ["governance", ["質詢", "議會", "預算", "開會", "效率", "官僚", "程序", "改革", "法規"]]
+      ];
+
+      const data = {
+        transport: {
+          headlines: ["讓台北的每一次移動，都成為城市韌性的證明", "從辦公孤島到連結之城，台北交通必須重新編碼"],
+          subtitles: ["NERV 式交通節點重構", "欣梅爾路線的城市連結"],
+          openers: ["面對通勤的日常戰場，不能只是加厚裝甲，而要重新設計城市的路徑。", "如果一座城市的節點彼此失聯，再強的個別建設也會變成孤島。"],
+          frames: ["這不是單一路口或單一園區的問題，而是人流、物流與生活機能長期失衡。", "底層邏輯是城市網絡失去韌性，讓工作、居住與交通被切成互不支援的碎片。"],
+          solutions: ["我會以南港和內湖為優先示範區，整合公共運輸、企業錯峰、接駁與步行環境，避免下一個辦公孤島形成。", "解方是建立跨區交通儀表板，公開瓶頸資料，讓捷運、公車、YouBike、停車與企業通勤一起調度。"],
+          tags: ["交通韌性", "辦公孤島", "台北願景", "非官方模擬"]
+        },
+        urbanPlanning: {
+          headlines: ["用系統治理重啟台北生活圈", "城市更新不是拆掉過去，而是重建公平的未來"],
+          subtitles: ["破與 Q 的生活圈再啟動", "城牆內外的公平更新"],
+          openers: ["舊體制的 AT 力場不是不能突破，關鍵是市府有沒有勇氣啟動重構。", "城市更新不是把人推出城牆外，而是讓每個生活圈都能被看見。"],
+          frames: ["問題不只是建物老舊，而是分配、公共設施與社區參與沒有被放進同一張圖。", "都市治理不能只看容積與速度，也要看市民是否能留在自己的生活圈。"],
+          solutions: ["市府要把都更、社宅、托育與長照一起規劃，讓更新後的台北不是更昂貴，而是更能生活。", "我會要求每個更新案清楚揭露公益回饋、安置方案與公共設施，讓城市重建回到市民身上。"],
+          tags: ["都市更新", "生活圈", "台北願景", "非官方模擬"]
+        },
+        cityDiplomacy: {
+          headlines: ["台北要走向世界，不再停留在單一框架", "讓首都外交成為民主城市的共同防線"],
+          subtitles: ["無限城不是封閉迷宮，而是民主城市網絡", "首都外交的次元躍升"],
+          openers: ["台北的視野不能被單一城市框住，真正的無限城應該連向民主世界。", "首都外交不是走進封閉迷宮，而是把城市的門開向巴黎、東京與更多民主夥伴。"],
+          frames: ["這不是禮貌性的城市交流，而是首都如何選擇自己的國際座標。", "台北需要的是透明、對等、民主價值清楚的城市連結，而不是可能成為滲透破口的慣性安排。"],
+          solutions: ["台北應該取消空泛的雙城慣性，轉向巴黎、東京、倫敦、紐約等民主城市，建立透明的無限城論壇。", "我會把城市外交變成產業、文化、資安與青年交流的實質網絡，讓台北的格調走向世界。"],
+          tags: ["首都外交", "無限城論壇", "台北願景", "非官方模擬"]
+        },
+        civilDefense: {
+          headlines: ["首都的安全，不只靠牆，而靠每一個節點都能運作", "把災防做在平時，讓台北在關鍵時刻不失序"],
+          subtitles: ["城市防禦網同步率提升", "全民韌性的終局測試"],
+          openers: ["敵人很強，難道我們就不準備了嗎？災害也是一樣，平時才是決勝點。", "真正的防禦不是等警報響起，而是在平時讓每個節點都知道自己該做什麼。"],
+          frames: ["災防不是單一局處的例行演習，而是醫療、避難、通訊與社區互助的整體測試。", "城市安全的核心，是讓基礎設施與基層組織在壓力下仍能維持運作。"],
+          solutions: ["市府要盤點避難空間、醫療量能、物資節點與社區訓練，把全民防衛意識變成日常制度。", "我會建立公開可查的災防地圖與演練節奏，讓每個行政區都知道風險、資源與支援路線。"],
+          tags: ["災防民防", "基礎設施", "台北願景", "非官方模擬"]
+        },
+        disinformation: {
+          headlines: ["守住資訊信任，就是守住城市治理的地基", "台北要有識讀攻擊的能力，也要有修復信任的制度"],
+          subtitles: ["認知防線展開", "資訊霧中的信任校準"],
+          openers: ["資訊戰最危險的地方，不是噪音很大，而是它讓人失去判斷的座標。", "當謠言開始複製擴散，城市治理就必須先守住信任的核心。"],
+          frames: ["這不是一般口水，而是資訊戰與認知作戰對社會信任的持續消耗。", "當假訊息被包裝成市政討論，市府就必須用透明資料與快速澄清建立防線。"],
+          solutions: ["市府必須建立即時澄清機制、公開資料儀表板與媒體識讀合作，把謠言的擴散速度壓下來。", "我會用透明資料、跨局處回應與社區識讀教育，讓台北成為不容易被操弄的民主城市。"],
+          tags: ["認知防禦", "透明澄清", "台北願景", "非官方模擬"]
+        },
+        governance: {
+          headlines: ["把政治展演降到最低，把行政效能拉到最高", "真正的改革，是讓制度開始對市民負責"],
+          subtitles: ["終止低效展演，啟動制度重構", "把官僚 AT 力場打開"],
+          openers: ["如果政治只剩展演，市民真正需要的解方就會被噪音吞沒。", "改革不是把口號喊得更熱血，而是讓制度停止空轉。"],
+          frames: ["低水準的政治展演會拖慢真正的行政改革，讓市民在程序裡消耗耐心。", "制度若只服務會議與新聞稿，就會失去面對問題的反應速度。"],
+          solutions: ["我要把專案進度、預算執行與延宕理由公開到市民看得懂，讓改革不再卡在會議室裡。", "市府會導入跨局處任務制，讓每個問題都有負責人、時程表與可檢驗的結果。"],
+          tags: ["行政效率", "制度改革", "台北願景", "非官方模擬"]
+        },
+        general: {
+          headlines: ["台北不是等待救援的城市，而是能自我更新的系統", "讓每一項市政，都回到韌性、透明與公共利益"],
+          subtitles: ["台北市政的韌性模式", "從想像到制度的同步啟動"],
+          openers: ["對手比較強，問題比較難，難道台北就不前進了嗎？", "一座城市的主角不是口號，而是每個能被制度接住的人。"],
+          frames: ["這不是單點修補，而是台北市政必須面對的系統性壓力測試。", "真正的城市治理，要能把複雜問題拆解成可執行、可追蹤、可問責的行動。"],
+          solutions: ["我會把問題拆成可追蹤的任務，公開進度、壓實責任，讓台北的韌性不是口號，而是市民每天感受到的改變。", "解方是用資料治理、社區協作與透明問責，把城市從被動回應改造成主動防禦的系統。"],
+          tags: ["系統治理", "公共利益", "台北願景", "非官方模擬"]
+        }
+      };
+
+      let selectedTopic = "transport";
+      let intensity = "campaign";
+      let reroll = 0;
+
+      const queryEl = document.getElementById("query");
+      const headlineEl = document.getElementById("headline");
+      const subtitleEl = document.getElementById("subtitle");
+      const bodyEl = document.getElementById("body");
+      const tagsEl = document.getElementById("tags");
+      const disclaimerEl = document.getElementById("disclaimer");
+
+      function hashString(value) {
+        let hash = 0;
+        for (let index = 0; index < value.length; index += 1) {
+          hash = (hash << 5) - hash + value.charCodeAt(index);
+          hash |= 0;
+        }
+        return Math.abs(hash);
+      }
+
+      function pick(items, seed, offset) {
+        return items[(seed + offset) % items.length];
+      }
+
+      function detectDomain(query) {
+        if (selectedTopic) return selectedTopic;
+        let best = ["general", 0];
+        for (const [domain, keywords] of rules) {
+          const score = keywords.reduce((total, keyword) => total + (query.includes(keyword) ? 1 : 0), 0);
+          if (score > best[1]) best = [domain, score];
+        }
+        return best[1] > 0 ? best[0] : "general";
+      }
+
+      function summarizeIssue(query, domain) {
+        const clean = query.replace(/[？?。！!，,]/g, "").trim();
+        if (clean.length > 4) return clean.length > 22 ? `${clean.slice(0, 22)}...` : clean;
+        const defaults = {
+          transport: "台北交通與通勤壓力",
+          urbanPlanning: "台北都市更新與生活圈重整",
+          cityDiplomacy: "台北首都外交與國際定位",
+          civilDefense: "台北災防民防與基礎設施安全",
+          disinformation: "假訊息與社會信任防線",
+          governance: "市府行政效率與制度改革",
+          general: "台北市政的複雜挑戰"
+        };
+        return defaults[domain];
+      }
+
+      function generateCard() {
+        const query = queryEl.value || "";
+        const domain = detectDomain(query);
+        const phrases = data[domain] || data.general;
+        const seed = hashString(`${query}-${domain}-${intensity}-${reroll}`);
+        const issue = summarizeIssue(query, domain);
+        let body = `面對${issue}，${pick(phrases.openers, seed, 1)}${pick(phrases.frames, seed, 2)}${pick(phrases.solutions, seed, 3)}`;
+
+        if (intensity === "campaign") {
+          body += " 這不是口號，而是我對首都市民的具體承諾。";
+        } else if (intensity === "strategic") {
+          body += domain === "cityDiplomacy" || domain === "disinformation"
+            ? " 台北必須站在民主防線的最前端，用制度把風險擋在城市之外。"
+            : " 台北要做的，是把每個民生問題都提升成可驗證的系統改革。";
+        }
+
+        const card = {
+          headline: pick(phrases.headlines, seed, 0),
+          subtitle: pick(phrases.subtitles, seed, 4),
+          body,
+          tags: phrases.tags,
+          disclaimer
+        };
+
+        headlineEl.textContent = card.headline;
+        subtitleEl.textContent = card.subtitle;
+        bodyEl.textContent = card.body;
+        disclaimerEl.textContent = card.disclaimer;
+        tagsEl.replaceChildren(...card.tags.map((tag) => {
+          const span = document.createElement("span");
+          span.textContent = tag;
+          return span;
+        }));
+        return card;
+      }
+
+      function setActiveButtons(selector, activeValue, attribute) {
+        document.querySelectorAll(selector).forEach((button) => {
+          button.classList.toggle("active", button.dataset[attribute] === activeValue);
+        });
+      }
+
+      function getCardText() {
+        return [
+          headlineEl.textContent,
+          subtitleEl.textContent,
+          "",
+          bodyEl.textContent,
+          "",
+          [...tagsEl.querySelectorAll("span")].map((tag) => `#${tag.textContent}`).join(" "),
+          disclaimerEl.textContent
+        ].join("\n");
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard) {
+          return navigator.clipboard.writeText(text);
+        }
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        return Promise.resolve();
+      }
+
+      function downloadSvg() {
+        const lines = [
+          "Taipei Vision Generator",
+          headlineEl.textContent,
+          subtitleEl.textContent,
+          bodyEl.textContent,
+          [...tagsEl.querySelectorAll("span")].map((tag) => `#${tag.textContent}`).join("  "),
+          disclaimerEl.textContent
+        ];
+        const escaped = lines.map((line) => String(line).replace(/[&<>]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[char]));
+        const bodyLines = [];
+        const body = escaped[3] || "";
+        for (let index = 0; index < body.length; index += 24) {
+          bodyLines.push(body.slice(index, index + 24));
+        }
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+          <rect width="1200" height="900" fill="#f7f4ed"/>
+          <path d="M0 0h1200v900H0z" fill="#fffdf8" opacity=".88"/>
+          <g stroke="#295f98" stroke-opacity=".12">${Array.from({ length: 38 }, (_, i) => `<path d="M${i * 32} 0v900"/>`).join("")}${Array.from({ length: 29 }, (_, i) => `<path d="M0 ${i * 32}h1200"/>`).join("")}</g>
+          <rect x="70" y="70" width="6" height="28" fill="#b63243"/>
+          <text x="92" y="94" font-family="Microsoft JhengHei, sans-serif" font-size="22" font-weight="800" fill="#295f98">${escaped[0]}</text>
+          <text x="70" y="210" font-family="Microsoft JhengHei, sans-serif" font-size="58" font-weight="900" fill="#16222a">${escaped[1]}</text>
+          <text x="70" y="286" font-family="Microsoft JhengHei, sans-serif" font-size="30" font-weight="900" fill="#8a4f0f">${escaped[2]}</text>
+          ${bodyLines.map((line, index) => `<text x="70" y="${370 + index * 48}" font-family="Microsoft JhengHei, sans-serif" font-size="30" font-weight="700" fill="#26343c">${line}</text>`).join("")}
+          <text x="70" y="790" font-family="Microsoft JhengHei, sans-serif" font-size="22" font-weight="800" fill="#5a6872">${escaped[4]}</text>
+          <text x="70" y="835" font-family="Microsoft JhengHei, sans-serif" font-size="18" fill="#6a747b">${escaped[5]}</text>
+        </svg>`;
+        const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "taipei-vision-card.svg";
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      document.querySelectorAll("[data-topic]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedTopic = button.dataset.topic;
+          queryEl.value = prompts[selectedTopic];
+          reroll += 1;
+          setActiveButtons(".chip", selectedTopic, "topic");
+          generateCard();
+        });
+      });
+
+      document.querySelectorAll("[data-intensity]").forEach((button) => {
+        button.addEventListener("click", () => {
+          intensity = button.dataset.intensity;
+          setActiveButtons(".segment", intensity, "intensity");
+          generateCard();
+        });
+      });
+
+      document.getElementById("generate").addEventListener("click", () => {
+        selectedTopic = "";
+        reroll += 1;
+        setActiveButtons(".chip", selectedTopic, "topic");
+        generateCard();
+      });
+      document.getElementById("reroll").addEventListener("click", () => {
+        reroll += 1;
+        generateCard();
+      });
+      document.getElementById("copy").addEventListener("click", async () => {
+        await copyText(getCardText());
+        const button = document.getElementById("copy");
+        button.textContent = "已複製";
+        setTimeout(() => {
+          button.textContent = "複製";
+        }, 1400);
+      });
+      document.getElementById("download").addEventListener("click", downloadSvg);
+      queryEl.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          selectedTopic = "";
+          reroll += 1;
+          setActiveButtons(".chip", selectedTopic, "topic");
+          generateCard();
+        }
+      });
+
+      generateCard();
+    </script>
   </body>
 </html>
