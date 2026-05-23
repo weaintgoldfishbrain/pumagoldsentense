@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="非官方沈伯洋動漫市政願景產生器，以規則式語料生成台北市政願景金句卡。"
+    />
+    <title>沈伯洋動漫市政願景產生器</title>
+  </head>
+  <body>
+    <div id="root">
+      <main class="fallback-shell">
+        <section class="fallback-app">
+          <p class="fallback-badge">非官方模擬工具</p>
+          <h1>沈伯洋動漫市政願景產生器</h1>
+          <p class="fallback-note">
+            這是靜態備援版。如果你在 GitHub Pages 看到這個畫面，代表目前是直接部署原始檔，尚未使用 Vite build 後的 dist。
+          </p>
+          <label>
+            <span>輸入台北市政題目</span>
+            <textarea id="fallback-query" rows="4">內湖塞車與南港發展要怎麼解決？</textarea>
+          </label>
+          <div class="fallback-actions">
+            <button type="button" data-topic="transport">交通</button>
+            <button type="button" data-topic="diplomacy">首都外交</button>
+            <button type="button" data-topic="defense">災防民防</button>
+            <button type="button" data-topic="info">假訊息</button>
+            <button type="button" id="fallback-generate">產生</button>
+            <button type="button" id="fallback-copy">複製</button>
+          </div>
+          <article class="fallback-card" id="fallback-card" aria-live="polite"></article>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      const fallbackData = {
+        transport: {
+          title: "從辦公孤島到連結之城，台北交通必須重新編碼",
+          subtitle: "NERV 式交通節點重構",
+          body: "面對台北交通與通勤壓力，城市不能只是加厚裝甲，而要重新設計路徑。這不是單一路口的問題，而是人流、物流與生活機能長期失衡。我們要以南港和內湖為優先示範區，整合公共運輸、企業錯峰與接駁系統，避免下一個辦公孤島形成。",
+          tags: ["交通韌性", "辦公孤島", "台北願景"]
+        },
+        diplomacy: {
+          title: "台北要走向世界，不再停留在單一框架",
+          subtitle: "首都外交的次元躍升",
+          body: "面對雙城論壇與城市定位，台北的視野不能被單一城市框住。這不是禮貌性的交流，而是首都如何選擇自己的國際座標。台北應轉向巴黎、東京、倫敦等民主城市，建立透明、對等、有實質合作的無限城論壇。",
+          tags: ["首都外交", "無限城論壇", "民主城市"]
+        },
+        defense: {
+          title: "把災防做在平時，讓台北在關鍵時刻不失序",
+          subtitle: "全民韌性的終局測試",
+          body: "面對地震、災害與基礎設施安全，敵人很強，難道我們就不準備了嗎？災防不是單一局處的演習，而是醫療、避難、通訊與社區互助的整體測試。市府要盤點避難空間、物資節點與社區訓練，讓全民防衛意識變成日常制度。",
+          tags: ["災防民防", "基礎設施", "城市韌性"]
+        },
+        info: {
+          title: "守住資訊信任，就是守住城市治理的地基",
+          subtitle: "認知防線展開",
+          body: "面對假新聞、網軍與抹黑，資訊戰最危險的地方不是噪音很大，而是讓人失去判斷的座標。市府必須建立即時澄清機制、公開資料儀表板與媒體識讀合作，用透明資料把謠言的擴散速度壓下來。",
+          tags: ["認知防禦", "透明澄清", "資訊韌性"]
+        }
+      };
+
+      const queryEl = document.getElementById("fallback-query");
+      const cardEl = document.getElementById("fallback-card");
+      let activeTopic = "transport";
+
+      function detectTopic(value) {
+        if (/雙城|兩岸|上海|國際|論壇/.test(value)) return "diplomacy";
+        if (/地震|災害|演習|避難|防空|民防/.test(value)) return "defense";
+        if (/假新聞|抹黑|網軍|造謠|認知|滲透/.test(value)) return "info";
+        return "transport";
+      }
+
+      function renderFallback() {
+        activeTopic = detectTopic(queryEl.value || "");
+        const data = fallbackData[activeTopic];
+        cardEl.innerHTML = `
+          <p class="fallback-kicker">Taipei Vision Generator</p>
+          <h2>${data.title}</h2>
+          <p class="fallback-subtitle">${data.subtitle}</p>
+          <p>${data.body}</p>
+          <div>${data.tags.map((tag) => `<span>#${tag}</span>`).join("")}</div>
+          <small>非本人發言 / 非官方 / 產生式政治文案模擬</small>
+        `;
+      }
+
+      document.querySelectorAll("[data-topic]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const prompts = {
+            transport: "內湖塞車與南港發展要怎麼解決？",
+            diplomacy: "雙城論壇與台北的國際定位該怎麼調整？",
+            defense: "台北面對地震災害要如何建立韌性？",
+            info: "面對假新聞網軍抹黑，市府該怎麼回應？"
+          };
+          queryEl.value = prompts[button.dataset.topic];
+          renderFallback();
+        });
+      });
+
+      document.getElementById("fallback-generate").addEventListener("click", renderFallback);
+      document.getElementById("fallback-copy").addEventListener("click", () => {
+        navigator.clipboard?.writeText(cardEl.innerText);
+      });
+      renderFallback();
+    </script>
+    <style>
+      .fallback-shell {
+        min-height: 100vh;
+        padding: 32px 16px;
+        background: #f7f4ed;
+        color: #1e2930;
+        font-family: "Microsoft JhengHei", system-ui, sans-serif;
+      }
+
+      .fallback-app {
+        max-width: 920px;
+        margin: 0 auto;
+      }
+
+      .fallback-badge,
+      .fallback-note,
+      .fallback-card small {
+        color: #5a6872;
+      }
+
+      .fallback-badge {
+        font-weight: 800;
+      }
+
+      .fallback-app h1 {
+        margin: 12px 0;
+        font-size: clamp(2rem, 6vw, 4rem);
+        line-height: 1.08;
+      }
+
+      .fallback-app label,
+      .fallback-app label span {
+        display: block;
+        font-weight: 800;
+      }
+
+      .fallback-app textarea {
+        width: 100%;
+        margin-top: 8px;
+        padding: 14px;
+        border: 1px solid #d7d1c5;
+        border-radius: 8px;
+        font: inherit;
+        line-height: 1.7;
+      }
+
+      .fallback-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 14px 0;
+      }
+
+      .fallback-actions button {
+        min-height: 40px;
+        border: 1px solid #d7d1c5;
+        border-radius: 8px;
+        padding: 0 12px;
+        background: #fffdf8;
+        color: #1e2930;
+        font: inherit;
+        font-weight: 800;
+      }
+
+      .fallback-actions button:last-child,
+      .fallback-actions button:nth-last-child(2) {
+        background: #b63243;
+        color: #fff;
+      }
+
+      .fallback-card {
+        margin-top: 16px;
+        border: 1px solid #d7d1c5;
+        border-radius: 8px;
+        padding: clamp(22px, 5vw, 44px);
+        background: #fffdf8;
+      }
+
+      .fallback-kicker {
+        color: #295f98;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .fallback-card h2 {
+        margin: 20px 0 12px;
+        font-size: clamp(1.8rem, 5vw, 3.5rem);
+        line-height: 1.1;
+      }
+
+      .fallback-subtitle {
+        color: #8a4f0f;
+        font-weight: 900;
+      }
+
+      .fallback-card p {
+        line-height: 1.9;
+      }
+
+      .fallback-card span {
+        display: inline-block;
+        margin: 4px 6px 4px 0;
+        color: #5a6872;
+        font-weight: 800;
+      }
+    </style>
+  </body>
+</html>
